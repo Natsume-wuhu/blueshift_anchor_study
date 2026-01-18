@@ -1,0 +1,39 @@
+{
+  "name": "Solana Anchor (Ubuntu 24.04)",
+  // 关键修改：使用 Ubuntu 24.04 (Noble) 基础镜像，它包含 GLIBC 2.39
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    // 通过特性安装 Rust，而不是依赖基础镜像
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "latest",
+      "profile": "default"
+    },
+    // 安装 Node.js
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    // 安装 Solana 常用依赖库
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "vadimcn.vscode-lldb"
+      ]
+    }
+  },
+  "forwardPorts": [8899],
+  // 容器创建后：安装依赖库 -> 安装 Solana -> 安装 AVM -> 安装 Anchor
+  "updateContentCommand": "sudo apt-get update && sudo apt-get install -y pkg-config build-essential libudev-dev libssl-dev && sh -c \"$(curl -sSfL https://release.anza.xyz/stable/install)\" && export PATH=\"/home/vscode/.local/share/solana/install/active_release/bin:$PATH\" && cargo install --git https://github.com/coral-xyz/anchor avm --locked --force && avm install latest && avm use latest",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.local/share/solana/install/active_release/bin:/home/vscode/.avm/bin"
+  }
+}
