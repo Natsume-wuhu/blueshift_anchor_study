@@ -1,4 +1,3 @@
-cargo-features = ["edition2024"] 
 [package]
 name = "blueshift_anchor_escrow"
 version = "0.1.0"
